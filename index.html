@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SASA YouTuber Awards 2026</title>
+  <!-- Google Sign-In SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --primary: #f59e0b;
+      --primary-hover: #d97706;
+      --accent: #3b82f6;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --border: #334155;
+      --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+
+    .nav-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    nav button, .user-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.4rem 0.7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    nav button:hover, nav button.active {
+      color: var(--primary);
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .admin-nav-btn {
+      border: 1px dashed var(--primary) !important;
+      color: var(--primary) !important;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .hero {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.15) 0%, rgba(15, 23, 42, 0) 100%);
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+
+    .hero h1 {
+      font-size: 2.3rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, #f59e0b, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      transition: transform 0.2s, border-color 0.2s;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(245, 158, 11, 0.5);
+    }
+
+    .pfp-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 0 auto 0.8rem auto;
+      display: block;
+      border: 3px solid var(--primary);
+    }
+
+    .btn {
+      width: 100%;
+      background-color: var(--primary);
+      color: #000;
+      border: none;
+      padding: 0.65rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 0.8rem;
+    }
+
+    .btn:hover { background-color: var(--primary-hover); }
+    .btn-secondary { background-color: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-danger { background-color: var(--danger); color: #fff; }
+    .btn-success { background-color: var(--success); color: #fff; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.4rem; font-weight: 600; color: var(--text-muted); font-size: 0.85rem; }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+      padding: 0.65rem;
+      background-color: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .badge-pending { background: rgba(245, 158, 11, 0.2); color: var(--primary); }
+    .badge-approved { background: rgba(34, 197, 94, 0.2); color: var(--success); }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal.active { display: flex; }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      max-width: 500px;
+      width: 100%;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .admin-banner {
+      background: #1e1b4b;
+      border: 1px solid #4338ca;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .notice-box {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--danger);
+      color: #fca5a5;
+      padding: 0.8rem;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .comment-item {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 0.6rem 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      font-size: 0.85rem;
+      border-left: 2px solid var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <a href="#" class="logo" onclick="showPage('home')">🏆 SASA Awards</a>
+      <nav>
+        <button onclick="showPage('home')" id="nav-home" class="active">Home</button>
+        <button onclick="showPage('vote')" id="nav-vote">Voting Arena</button>
+        <button onclick="showPage('nominate')" id="nav-nominate">Nominate Creator</button>
+        <button onclick="showPage('past')" id="nav-past">Past Awards</button>
+        <button onclick="openAdminModal()" id="nav-admin" class="admin-nav-btn">Head Person</button>
+        <div id="user-profile-badge" style="display: none; align-items: center; gap: 0.4rem;">
+          <img id="nav-user-pfp" class="pfp-img" style="width: 32px; height: 32px; margin: 0; border: 1px solid var(--primary);" src="" alt="pfp">
+          <button onclick="openEditProfileModal()" class="user-btn" style="color: var(--primary);">Edit Profile</button>
+        </div>
+        <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com" data-callback="handleGoogleSignIn"></div>
+        <div class="g_id_signin" id="google-btn-wrapper" data-type="icon" data-shape="circle"></div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- HOME PAGE -->
+    <div id="page-home" class="page active">
+      <div class="hero">
+        <h1>SASA YouTuber Awards 2026</h1>
+        <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1rem;">The official platform for your favorite content creators. Log in, check profiles, and stay tuned!</p>
+        <button class="btn" style="max-width: 200px; margin: 0 auto;" onclick="showPage('vote')">Explore Voting Arena 🔥</button>
+      </div>
+
+      <div id="voting-status-notice" class="notice-box">
+        🔒 Voting and polls are currently PAUSED by the Head Person. Updates will be posted soon!
+      </div>
+
+      <h2 style="margin-bottom: 1rem; color: var(--primary);">📢 Daily Updates & News</h2>
+      <div id="updates-list"></div>
+    </div>
+
+    <!-- VOTING PAGE -->
+    <div id="page-vote" class="page">
+      <h2 style="margin-bottom: 0.5rem;">Voting Arena</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Check out approved creators, view their profiles, and share!</p>
+      <div class="grid" id="voting-grid"></div>
+    </div>
+
+    <!-- NOMINATION REQUEST PAGE -->
+    <div id="page-nominate" class="page">
+      <div style="max-width: 550px; margin: 0 auto; background: var(--card-bg); padding: 1.5rem; border-radius: 12px; border: 1px solid var(--border);">
+        <h2 style="margin-bottom: 0.5rem; text-align: center; color: var(--primary);">Creator Nomination</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; margin-bottom: 1.2rem;">
+          Nominate yourself or your favorite YouTuber! Submissions will be reviewed by the Head Person.
+        </p>
+
+        <form id="nomination-form" onsubmit="handleNominationSubmit(event)">
+          <div class="form-group">
+            <label>Creator / Channel Name</label>
+            <input type="text" id="nom-name" placeholder="e.g. Mythpat" required>
+          </div>
+          <div class="form-group">
+            <label>Profile Picture URL (Image Link)</label>
+            <input type="url" id="nom-pfp" placeholder="https://example.com/photo.jpg" required>
+          </div>
+          <div class="form-group">
+            <label>YouTube Channel URL</label>
+            <input type="url" id="nom-url" placeholder="https://youtube.com/@channel" required>
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="nom-category">
+              <option>Gaming</option>
+              <option>Vlogging</option>
+              <option>Tech & Education</option>
+              <option>Entertainment / Comedy</option>
+              <option>Shorts Creator</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Short Bio (2-3 lines about yourself)</label>
+            <textarea id="nom-bio" rows="3" maxlength="200" placeholder="Tell viewers about your channel..." required></textarea>
+          </div>
+          <button type="submit" class="btn">Submit for Approval</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- PAST AWARDS PAGE -->
+    <div id="page-past" class="page">
+      <h2 style="margin-bottom: 1rem;">🏆 Past Award Winners & Hall of Fame</h2>
+      <div class="grid" id="past-awards-grid"></div>
+    </div>
+
+    <!-- ADMIN DASHBOARD PAGE -->
+    <div id="page-admin" class="page">
+      <div class="admin-banner">
+        <div>
+          <h3>🛡️ Head Person Control Center</h3>
+          <p style="font-size: 0.8rem; color: #a5b4fc;">Welcome Boss! Control voting status, themes, and profile approvals.</p>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button id="toggle-vote-btn" class="btn btn-success" style="width: auto; padding: 0.4rem 0.8rem;" onclick="toggleVotingSystem()">Voting: OFF</button>
+          <button class="btn btn-secondary" style="width: auto; padding: 0.4rem 0.8rem;" onclick="logoutAdmin()">Logout</button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+        <div class="card">
+          <h3 style="margin-bottom: 0.8rem; color: var(--primary);">Website Theme & Font</h3>
+          <div class="form-group">
+            <label>Accent Color Theme</label>
+            <select id="theme-select" onchange="changeTheme(this.value)">
+              <option value="gold">SASA Gold (Default)</option>
+              <option value="neon">Neon Cyber</option>
+              <option value="crimson">Royal Crimson</option>
+              <option value="emerald">Emerald Green</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Font Style</label>
+            <select id="font-select" onchange="changeFont(this.value)">
+              <option value="sans">Modern Sans (Segoe)</option>
+              <option value="serif">Classic Serif (Georgia)</option>
+              <option value="monospace">Tech Mono (Courier)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 0.8rem; color: var(--primary);">Post Daily Update / Delete Post</h3>
+          <form onsubmit="handlePostUpdate(event)">
+            <div class="form-group">
+              <input type="text" id="admin-update-title" placeholder="Update Title" required>
+            </div>
+            <div class="form-group">
+              <textarea id="admin-update-content" rows="2" placeholder="Announcement content..." required></textarea>
+            </div>
+            <button type="submit" class="btn">Publish Announcement</button>
+          </form>
+        </div>
+      </div>
+
+      <h3 style="margin-bottom: 0.8rem;">Pending Nominee Applications</h3>
+      <div class="grid" id="admin-pending-grid" style="margin-bottom: 2rem;"></div>
+
+      <h3 style="margin-bottom: 0.8rem;">Manage Active Approved Nominees</h3>
+      <div class="grid" id="admin-approved-grid"></div>
+    </div>
+
+  </div>
+
+  <!-- PROFILE VIEW & COMMENT MODAL -->
+  <div class="modal" id="profile-modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeModal('profile-modal')">&times;</span>
+      <img id="modal-pfp" class="pfp-img" src="" alt="pfp">
+      <h2 id="modal-name" style="text-align: center; margin-bottom: 0.2rem;">Creator Name</h2>
+      <p id="modal-category" style="text-align: center; color: var(--primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.8rem;"></p>
+      <p id="modal-bio" style="color: var(--text-muted); margin-bottom: 1rem; text-align: center; font-size: 0.9rem;"></p>
+      
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+        <a id="modal-yt-link" href="#" target="_blank" class="btn btn-secondary" style="display: block; text-align: center; text-decoration: none;">YouTube ↗</a>
+        <button class="btn btn-secondary" onclick="shareProfile()">Share 🔗</button>
+      </div>
+
+      <button id="modal-vote-btn" class="btn">Vote For Creator</button>
+
+      <hr style="border-color: var(--border); margin: 1.2rem 0;">
+
+      <h4 style="margin-bottom: 0.6rem;">Comments & Fan Wall</h4>
+      <div id="modal-comments-list" style="max-height: 150px; overflow-y: auto; margin-bottom: 0.8rem;"></div>
+
+      <form onsubmit="handleAddComment(event)">
+        <div class="form-group" style="margin-bottom: 0.5rem;">
+          <input type="text" id="comment-input" placeholder="Leave a nice comment..." required>
+        </div>
+        <button type="submit" class="btn btn-secondary" style="padding: 0.4rem;">Post Comment</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- EDIT USER PROFILE MODAL -->
+  <div class="modal" id="edit-profile-modal">
+    <div class="modal-content" style="max-width: 400px;">
+      <span class="close-modal" onclick="closeModal('edit-profile-modal')">&times;</span>
+      <h3 style="text-align: center; margin-bottom: 1rem;">Edit Your Profile</h3>
+      <form onsubmit="handleSaveProfile(event)">
+        <div class="form-group">
+          <label>Display Name</label>
+          <input type="text" id="edit-user-name" required>
+        </div>
+        <div class="form-group">
+          <label>Profile Picture URL</label>
+          <input type="url" id="edit-user-pfp" required>
+        </div>
+        <div class="form-group">
+          <label>Bio</label>
+          <textarea id="edit-user-bio" rows="2" placeholder="Write something about yourself..."></textarea>
+        </div>
+        <button type="submit" class="btn">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ADMIN AUTH MODAL -->
+  <div class="modal" id="admin-auth-modal">
+    <div class="modal-content" style="max-width: 360px;">
+      <span class="close-modal" onclick="closeModal('admin-auth-modal')">&times;</span>
+      <h3 style="text-align: center; margin-bottom: 1rem; color: var(--primary);">Head Person Login</h3>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="admin-user-input" placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-pass-input" placeholder="Enter password">
+      </div>
+      <button class="btn" onclick="verifyAdmin()">Login as Head</button>
+    </div>
+  </div>
+
+  <script>
+    const DEFAULT_DATA = {
+      votingActive: false,
+      theme: 'gold',
+      font: 'sans',
+      userProfile: { name: 'SASA Member', pfp: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150', bio: 'Fan of awesome creators!' },
+      nominees: [
+        { id: 1, name: "Mythpat", category: "Gaming", pfp: "https://images.unsplash.com/photo-1566492031773-4f4e44671857?w=150", bio: "Hilarious gaming content and streams!", url: "https://youtube.com", status: "approved", votes: 0, comments: [] },
+        { id: 2, name: "Technical Guruji", category: "Tech & Education", pfp: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150", bio: "Tech news and gadget reviews.", url: "https://youtube.com", status: "approved", votes: 0, comments: [] }
+      ],
+      updates: [
+        { id: 1, title: "SASA Awards Registration Open!", content: "Nominees can now register their profile. Voting will start once announced by Head Person.", date: "Oct 18, 2026" }
+      ],
+      pastWinners: [
+        { id: 1, name: "CarryMinati", title: "YouTuber of the Year 2025" }
+      ],
+      isAdminLoggedIn: false
+    };
+
+    let activeModalNomineeId = null;
+
+    function getData() {
+      const stored = localStorage.getItem('sasa_award_v3_db');
+      return stored ? JSON.parse(stored) : DEFAULT_DATA;
+    }
+
+    function saveData(data) {
+      localStorage.setItem('sasa_award_v3_db', JSON.stringify(data));
+      render();
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+
+      if (pageId === 'admin') {
+        const db = getData();
+        if (!db.isAdminLoggedIn) {
+          openAdminModal();
+          return;
+        }
+      }
+
+      document.getElementById(`page-${pageId}`).classList.add('active');
+      const navBtn = document.getElementById(`nav-${pageId}`);
+      if (navBtn) navBtn.classList.add('active');
+    }
+
+    function render() {
+      const db = getData();
+
+      // Themes
+      document.getElementById('voting-status-notice').style.display = db.votingActive ? 'none' : 'block';
+      
+      // Updates
+      document.getElementById('updates-list').innerHTML = db.updates.map(u => `
+        <div class="card" style="margin-bottom: 1rem; border-left: 3px solid var(--primary);">
+          <div style="font-size: 0.75rem; color: var(--text-muted);">${u.date}</div>
+          <h3 style="margin: 0.2rem 0;">${u.title}</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">${u.content}</p>
+          ${db.isAdminLoggedIn ? `<button class="btn btn-danger" style="width: auto; padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-top: 0.5rem;" onclick="deleteUpdate(${u.id})">Delete Post</button>` : ''}
+        </div>
+      `).join('');
+
+      // Nominees Grid
+      const approved = db.nominees.filter(n => n.status === 'approved');
+      const votingGrid = document.getElementById('voting-grid');
+      
+      if (approved.length === 0) {
+        votingGrid.in
